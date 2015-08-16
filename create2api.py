@@ -31,6 +31,16 @@ class ROIFailedToSendError(Error):
     def __init__(self, msg):
         self.msg = msg
 
+class ROIFailedToReceiveError(Error):
+    """Exception raised when there is an error in the data received from the Create 2
+        
+        Attributes:
+            msg -- explanation of the error
+    """
+    def __init__(self,msg):
+        self.msg = msg
+#17026722509
+
 
 with open(configFileName, 'r') as fileData:
     try:
@@ -54,14 +64,35 @@ class SerialCommandInterface(object):
         self.ser.open()
     
     def send(self, opcode, data):
-        if data = None
-            #Sometimes opcodes don't need data.
+        #First thing to do is convert the opcode to a tuple.
+        temp_opcode = (opcode,)
+        bytes = None
         
-        sendRaw(data)
+        if data = None:
+            #Sometimes opcodes don't need data. Since we can't add
+            # a None type to a tuple, we have to make this check.
+            bytes = temp_opcode
+        else:
+            #Add the opcodes and data together
+            bytes = temp_opcode + data
+        self.ser.write(struct.pack('B' * len(bytes), *bytes))
     
-    def sendRaw(self, data):
-        #This converts your nice human readable data into the necesary serial data.
-        self.ser.write()
+    def Read(self, num_bytes):
+        """Read a string of 'num_bytes' bytes from the robot.
+        
+            Arguments:
+                num_bytes: The number of bytes we expect to read.
+        """
+        #logging.debug('Attempting to read %d bytes from SCI port.' % num_bytes)
+        data = self.ser.read(num_bytes)
+        #logging.debug('Read %d bytes from SCI port.' % len(data))
+        if not data:
+            raise ROIFailedToReceiveError('Error reading from SCI port. No data.')
+        if len(data) != num_bytes:
+            raise ROIFailedToReceiveError('Error reading from SCI port. Wrong data length.')
+        return data
+        
+        
         
 class Create2(object):
     """The top level class for controlling a Create2.
@@ -98,7 +129,7 @@ class Create2(object):
             115200 = 11
             )
         if baudRate in baud_dict:
-            SCI.send(configData['opcodes']['baud'], baud_dict[baudRate])
+            SCI.send(configData['opcodes']['baud'], tuple(baud_dict[baudRate]))
         else:
             raise ROIDataByteError("Invalid buad rate")
     
@@ -167,7 +198,7 @@ class Create2(object):
             raise ROIDataByteError("Invalid minute input")
             
         if noError:
-            #SCI.send(configData['opcodes']['start'],0)
+            SCI.send(configData['opcodes']['start'], tuple[data])
         else
             raise ROIFailedToSendError("Invalid data, failed to send")
     
@@ -211,21 +242,34 @@ class Create2(object):
             #data[2] = Radius high byte
             #data[3] = Radius low byte
             
+            #Normally we would convert data to a tuple before sending it to SCI
+            #   But struct.unpack already returns a tuple.
             SCI.send(configData['opcodes']['drive'], data)
         else
             raise ROIFailedToSendError("Invalid data, failed to send")
         
     
     def drive_direct():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def drive_pwm():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def motors():
         #SCI.send(configData['opcodes']['start'],0)
     
-    def motors_pwm():
+    def motors_pwm(main_pwm, side_pwm, vacuum_pwm):
+        """Serial sequence: [144] [Main Brush PWM] [Side Brush PWM] [Vacuum PWM] 
+            
+            Arguments:
+                main_pwm: Duty cycle for Main Brush. Value from -127 to 127. Positive speeds spin inward.
+                side_pwm: Duty cycle for Side Brush. Value from -127 to 127. Positive speeds spin counterclockwise.
+                vacuum_pwm: Duty cycle for Vacuum. Value from 0-127. No negative speeds allowed.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def led():
