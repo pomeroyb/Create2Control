@@ -103,7 +103,9 @@ class Create2(object):
     def __init__(self):
         #Nothing yet
         self.SCI = SerialCommandInterface()
-    
+
+    """ START OF OPEN INTERFACE COMMANDS
+    """
     def start():
         SCI.send(configData['opcodes']['start'], None)
         
@@ -155,7 +157,9 @@ class Create2(object):
     def power():
         SCI.send(configData['opcodes']['power'], None)
     
-    def schedule():  ####SKIPPED THIS ONE GODDAMMIT
+    def schedule():
+        """Not implementing this for now.
+        """    
         #SCI.send(configData['opcodes']['start'],0)
     
     def set_day_time(day, hour, minute):
@@ -198,7 +202,7 @@ class Create2(object):
             raise ROIDataByteError("Invalid minute input")
             
         if noError:
-            SCI.send(configData['opcodes']['start'], tuple[data])
+            SCI.send(configData['opcodes']['start'], tuple(data))
         else
             raise ROIFailedToSendError("Invalid data, failed to send")
     
@@ -260,6 +264,8 @@ class Create2(object):
         #SCI.send(configData['opcodes']['start'],0)
     
     def motors():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def motors_pwm(main_pwm, side_pwm, vacuum_pwm):
@@ -270,43 +276,109 @@ class Create2(object):
                 side_pwm: Duty cycle for Side Brush. Value from -127 to 127. Positive speeds spin counterclockwise.
                 vacuum_pwm: Duty cycle for Vacuum. Value from 0-127. No negative speeds allowed.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        noError = True
+        data = []
+        
+        #First check that our data is within bounds
+        if main_pwm >= -127 and main_pwm <= 127:
+            data[0] = main_pwm
+        else:
+            noError = False
+            raise ROIDataByteError("Invalid Main Brush input")
+        if side_pwm >= -127 and side_pwm <= 127:
+            data[1] = side_pwm
+        else:
+            noError = False
+            raise ROIDataByteError("Invalid Side Brush input")
+        if vacuum_pwm >= 0 and vacuum_pwm <= 127:
+            data[2] = vacuum_pwm
+        else:
+            noError = False
+            raise ROIDataByteError("Invalid Vacuum input")
+        
+        #Send it off if there were no errors.
+        if noError:
+            SCI.send(configData['opcodes']['motors_pwm'], tuple(data))
+        else:
+            raise ROIFailedToSendError("Invalid data, failed to send")
+        
     
     def led():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def scheduling_led():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def digit_led_raw():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def buttons():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
-    def digit_led_ascii():
-        #SCI.send(configData['opcodes']['start'],0)
+    def digit_led_ascii(display_string):
+        """This command controls the four 7 segment displays using ASCII character codes.
+        
+            Arguments:
+                display_string: A four character string to be displayed. This must be four
+                    characters. Any blank characters should be represented with a space: ' '
+        """
+        noError = True
+        display_list = []
+        if len(display_string) == 4:
+            display_list = list(display_string)
+        else:
+            #Too many or too few characters!
+            noError = False
+            raise ROIDataByteError("Invalid ASCII input (Must be EXACTLY four characters)")
+        if noError:
+            SCI.send(configData['opcodes']['start'], tuple(display_list))
+        else:
+            raise ROIFailedToSendError("Invalid data, failed to send")
+        
     
     def song():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def play():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def sensors():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def query_list():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def stream():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
     
     def pause_resume_stream():
+        """Not implementing this for now.
+        """
         #SCI.send(configData['opcodes']['start'],0)
 
+    """ END OF OPEN INTERFACE COMMANDS
+    """
         
-
+    def drive_straight(velocity):
+        self.drive(velocity, 32767)
 
 
 
