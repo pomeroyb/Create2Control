@@ -10,7 +10,7 @@ Create2API has a lot of checks in place to make sure you don't send a bad comman
 ###Easy to use
 Create2API is meant to be interacted with through a single class: "Create2". Interacting with your bot is a breeze:
 
-'''python
+```python
 import create2api
 import time
 
@@ -30,7 +30,8 @@ time.sleep(5)
 #Stop the bot
 bot.drive_straight(0)
 
-'''
+```
+
 
 ##Implemented OI codes
 - Start
