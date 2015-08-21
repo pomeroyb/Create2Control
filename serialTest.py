@@ -1,13 +1,18 @@
-import pyrobot2
+import create2api
+import time
 
-bot = pyrobot2.Create2()
-bot.sensors.getItem('temperature')
+#Create a Create2 Bot
 
-#bot.Control()
+bot = create2api.Create2()
 
-#sens.GetAll()
+bot.start()
+bot.safe()
+
+bot.drive_straight(10)
+
+time.sleep(5)
+
+bot.drive_straight(0)
 
 
-#drive straight with a velocity of 10... 10 whats?
-
-#bot.DriveStraight(100)
+bot.destroy()

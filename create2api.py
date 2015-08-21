@@ -1,12 +1,8 @@
 import json
 import serial
 import struct
+import os
 
-#first thing we want to do is load up our config file with our opcodes and other data.
-
-configFileName = 'config.json'
-configData = None
-baud = 115200
 
 class Error(Exception):
     """Error"""
@@ -52,7 +48,7 @@ class Config(object):
     
     def __init__(self):
         self.fname = 'config.json'
-        self.configData = None
+        self.data = None
     
     def load(self):
         """ Loads a Create2 config file, that holds various dicts of opcodes.
@@ -60,17 +56,16 @@ class Config(object):
         """
         if os.path.isfile(self.fname):
             #file exists, load it
-            with open(configFileName, 'r') as fileData:
+            with open(self.fname) as fileData:
                 try:
-                    json.load(fileData, configData)
+                    self.data = json.load(fileData)
                     print 'Loaded config and opcodes'
                 except ValueError, e:
                     print 'Could not load config'
         else:
             #couldn't find file
             print "No config file found"
-            raise ValueError, e:
-                print "could not find config"
+            raise ValueError('could not find config')
     
     
 
@@ -80,14 +75,21 @@ class SerialCommandInterface(object):
     
     """
     
+
+    
     def __init__(self):
-        self.ser = serial.Serial(0)
+        com = 23
+        baud = 115200
+        
+        self.ser = serial.Serial()
+        self.ser.port = com
         self.ser.baudrate = baud
         print self.ser.name
         if self.ser.isOpen(): 
-            #print "port was open"
+            print "port was open"
             self.ser.close()
         self.ser.open()
+        print "opened port"
     
     def send(self, opcode, data):
         #First thing to do is convert the opcode to a tuple.
@@ -117,7 +119,11 @@ class SerialCommandInterface(object):
         if len(data) != num_bytes:
             raise ROIFailedToReceiveError('Error reading from SCI port. Wrong data length.')
         return data
-        
+    
+    def Close(self):
+        """Closes the serial connection.
+        """
+        self.ser.close()
         
         
 class Create2(object):
@@ -129,66 +135,75 @@ class Create2(object):
     def __init__(self):
         #Nothing yet
         self.SCI = SerialCommandInterface()
-
+        self.config = Config()
+        self.config.load()
+    
+    def destroy(self):
+        """Closes up serial ports and terminates connection to the Create2
+        """
+        self.SCI.Close()
+        print 'Disconnected'
+    
+    
     """ START OF OPEN INTERFACE COMMANDS
     """
-    def start():
-        SCI.send(configData['opcodes']['start'], None)
+    def start(self):
+        self.SCI.send(self.config.data['opcodes']['start'], None)
         
-    def reset():
-        SCI.send(configData['opcodes']['reset'], None)
+    def reset(self):
+        self.SCI.send(config.data['opcodes']['reset'], None)
         
-    def stop():
-        SCI.send(configData['opcodes']['stop'], None)
+    def stop(self):
+        self.SCI.send(config.data['opcodes']['stop'], None)
         
-    def baud(baudRate):
-        baud_dict = dict(
-            300 = 0,
-            600 = 1,
-            1200 = 2,
-            2400 = 3,
-            4800 = 4,
-            9600 = 5,
-            14400 = 6,
-            19200 = 7,
-            28800 = 8,
-            38400 = 9,
-            57600 = 10,
-            115200 = 11
-            )
+    def baud(self, baudRate):
+        baud_dict = {
+            300:0,
+            600:1,
+            1200:2,
+            2400:3,
+            4800:4,
+            9600:5,
+            14400:6,
+            19200:7,
+            28800:8,
+            38400:9,
+            57600:10,
+            115200:11
+            }
         if baudRate in baud_dict:
-            SCI.send(configData['opcodes']['baud'], tuple(baud_dict[baudRate]))
+            self.SCI.send(config.data['opcodes']['baud'], tuple(baud_dict[baudRate]))
         else:
             raise ROIDataByteError("Invalid buad rate")
     
     
-    def safe():
-        SCI.send(configData['opcodes']['safe'], None)
+    def safe(self):
+        self.SCI.send(config.data['opcodes']['safe'], None)
     
-    def full():
-        SCI.send(configData['opcodes']['full'], None)
+    def full(self):
+        self.SCI.send(config.data['opcodes']['full'], None)
     
-    def clean():
-        SCI.send(configData['opcodes']['clean'], None)
+    def clean(self):
+        self.SCI.send(config.data['opcodes']['clean'], None)
     
-    def max():
-        SCI.send(configData['opcodes']['max'], None)
+    def max(self):
+        self.SCI.send(config.data['opcodes']['max'], None)
     
-    def spot():
-        SCI.send(configData['opcodes']['spot'], None)
+    def spot(self):
+        self.SCI.send(config.data['opcodes']['spot'], None)
     
-    def seek_dock():
-        SCI.send(configData['opcodes']['seek_dock'], None)
+    def seek_dock(self):
+        self.SCI.send(config.data['opcodes']['seek_dock'], None)
     
-    def power():
-        SCI.send(configData['opcodes']['power'], None)
+    def power(self):
+        self.SCI.send(config.data['opcodes']['power'], None)
     
-    def schedule():
+    def schedule(self):
         """Not implementing this for now.
         """    
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def set_day_time(day, hour, minute):
+    def set_day_time(self, day, hour, minute):
         """Sets the Create2's clock
             
             Args:
@@ -228,11 +243,11 @@ class Create2(object):
             raise ROIDataByteError("Invalid minute input")
             
         if noError:
-            SCI.send(configData['opcodes']['start'], tuple(data))
-        else
+            self.SCI.send(config.data['opcodes']['start'], tuple(data))
+        else:
             raise ROIFailedToSendError("Invalid data, failed to send")
     
-    def drive(velocity, radius): 
+    def drive(self, velocity, radius): 
         """Controls the Create 2's drive wheels.
         
             Args:
@@ -274,27 +289,27 @@ class Create2(object):
             
             #Normally we would convert data to a tuple before sending it to SCI
             #   But struct.unpack already returns a tuple.
-            SCI.send(configData['opcodes']['drive'], data)
-        else
+            self.SCI.send(config.data['opcodes']['drive'], data)
+        else:
             raise ROIFailedToSendError("Invalid data, failed to send")
         
     
-    def drive_direct():
+    def drive_direct(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def drive_pwm():
+    def drive_pwm(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def motors():
+    def motors(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def motors_pwm(main_pwm, side_pwm, vacuum_pwm):
+    def motors_pwm(self, main_pwm, side_pwm, vacuum_pwm):
         """Serial sequence: [144] [Main Brush PWM] [Side Brush PWM] [Vacuum PWM] 
             
             Arguments:
@@ -324,32 +339,32 @@ class Create2(object):
         
         #Send it off if there were no errors.
         if noError:
-            SCI.send(configData['opcodes']['motors_pwm'], tuple(data))
+            self.SCI.send(config.data['opcodes']['motors_pwm'], tuple(data))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
         
     
-    def led():
+    def led(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def scheduling_led():
+    def scheduling_led(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def digit_led_raw():
+    def digit_led_raw(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def buttons():
+    def buttons(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def digit_led_ascii(display_string):
+    def digit_led_ascii(self, display_string):
         """This command controls the four 7 segment displays using ASCII character codes.
         
             Arguments:
@@ -365,45 +380,47 @@ class Create2(object):
             noError = False
             raise ROIDataByteError("Invalid ASCII input (Must be EXACTLY four characters)")
         if noError:
-            SCI.send(configData['opcodes']['start'], tuple(display_list))
+            #Need to map ascii to numbers from the dict.
+            print 'map the ascii!'
+            #self.SCI.send(config.data['opcodes']['start'], tuple(display_list))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
         
     
-    def song():
+    def song(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def play():
+    def play(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def sensors():
+    def sensors(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def query_list():
+    def query_list(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def stream():
+    def stream(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
     
-    def pause_resume_stream():
+    def pause_resume_stream(self):
         """Not implementing this for now.
         """
-        #SCI.send(configData['opcodes']['start'],0)
+        #self.SCI.send(config.data['opcodes']['start'],0)
 
     """ END OF OPEN INTERFACE COMMANDS
     """
         
-    def drive_straight(velocity):
+    def drive_straight(self, velocity):
         self.drive(velocity, 32767)
 
 
