@@ -151,10 +151,10 @@ class Create2(object):
         self.SCI.send(self.config.data['opcodes']['start'], None)
         
     def reset(self):
-        self.SCI.send(config.data['opcodes']['reset'], None)
+        self.SCI.send(self.config.data['opcodes']['reset'], None)
         
     def stop(self):
-        self.SCI.send(config.data['opcodes']['stop'], None)
+        self.SCI.send(self.config.data['opcodes']['stop'], None)
         
     def baud(self, baudRate):
         baud_dict = {
@@ -172,36 +172,36 @@ class Create2(object):
             115200:11
             }
         if baudRate in baud_dict:
-            self.SCI.send(config.data['opcodes']['baud'], tuple(baud_dict[baudRate]))
+            self.SCI.send(self.config.data['opcodes']['baud'], tuple(baud_dict[baudRate]))
         else:
             raise ROIDataByteError("Invalid buad rate")
     
     
     def safe(self):
-        self.SCI.send(config.data['opcodes']['safe'], None)
+        self.SCI.send(self.config.data['opcodes']['safe'], None)
     
     def full(self):
-        self.SCI.send(config.data['opcodes']['full'], None)
+        self.SCI.send(self.config.data['opcodes']['full'], None)
     
     def clean(self):
-        self.SCI.send(config.data['opcodes']['clean'], None)
+        self.SCI.send(self.config.data['opcodes']['clean'], None)
     
     def max(self):
-        self.SCI.send(config.data['opcodes']['max'], None)
+        self.SCI.send(self.config.data['opcodes']['max'], None)
     
     def spot(self):
-        self.SCI.send(config.data['opcodes']['spot'], None)
+        self.SCI.send(self.config.data['opcodes']['spot'], None)
     
     def seek_dock(self):
-        self.SCI.send(config.data['opcodes']['seek_dock'], None)
+        self.SCI.send(self.config.data['opcodes']['seek_dock'], None)
     
     def power(self):
-        self.SCI.send(config.data['opcodes']['power'], None)
+        self.SCI.send(self.config.data['opcodes']['power'], None)
     
     def schedule(self):
         """Not implementing this for now.
         """    
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def set_day_time(self, day, hour, minute):
         """Sets the Create2's clock
@@ -243,7 +243,7 @@ class Create2(object):
             raise ROIDataByteError("Invalid minute input")
             
         if noError:
-            self.SCI.send(config.data['opcodes']['start'], tuple(data))
+            self.SCI.send(self.config.data['opcodes']['start'], tuple(data))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
     
@@ -263,6 +263,8 @@ class Create2(object):
         r = None
 
         #Check to make sure we are getting sent valid velocity/radius.
+        
+
         if velocity >= -500 and velocity <= 500:
             v = int(velocity) & 0xffff
             #Convert 16bit velocity to Hex
@@ -270,12 +272,17 @@ class Create2(object):
             noError = False
             raise ROIDataByteError("Invalid velocity input")
         
-        if radius >= -2000 and radius <= 2000:
+        if radius == 32767 or radius == -1 or radius == 1:
+            #Special case radius
             r = int(radius) & 0xffff
             #Convert 16bit radius to Hex
         else:
-            noError = False
-            raise ROIDataByteError("Invalid radius input")
+            if radius >= -2000 and radius <= 2000:
+                r = int(radius) & 0xffff
+                #Convert 16bit radius to Hex
+            else:
+                noError = False
+                raise ROIDataByteError("Invalid radius input")
 
         if noError:
             data = struct.unpack('4B', struct.pack('>2H', velocity, radius))
@@ -289,7 +296,7 @@ class Create2(object):
             
             #Normally we would convert data to a tuple before sending it to SCI
             #   But struct.unpack already returns a tuple.
-            self.SCI.send(config.data['opcodes']['drive'], data)
+            self.SCI.send(self.config.data['opcodes']['drive'], data)
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
         
@@ -297,17 +304,17 @@ class Create2(object):
     def drive_direct(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def drive_pwm(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def motors(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def motors_pwm(self, main_pwm, side_pwm, vacuum_pwm):
         """Serial sequence: [144] [Main Brush PWM] [Side Brush PWM] [Vacuum PWM] 
@@ -339,7 +346,7 @@ class Create2(object):
         
         #Send it off if there were no errors.
         if noError:
-            self.SCI.send(config.data['opcodes']['motors_pwm'], tuple(data))
+            self.SCI.send(self.config.data['opcodes']['motors_pwm'], tuple(data))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
         
@@ -347,22 +354,22 @@ class Create2(object):
     def led(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def scheduling_led(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def digit_led_raw(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def buttons(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def digit_led_ascii(self, display_string):
         """This command controls the four 7 segment displays using ASCII character codes.
@@ -382,7 +389,7 @@ class Create2(object):
         if noError:
             #Need to map ascii to numbers from the dict.
             print 'map the ascii!'
-            #self.SCI.send(config.data['opcodes']['start'], tuple(display_list))
+            #self.SCI.send(self.config.data['opcodes']['start'], tuple(display_list))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
         
@@ -390,32 +397,32 @@ class Create2(object):
     def song(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def play(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def sensors(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def query_list(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def stream(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
     
     def pause_resume_stream(self):
         """Not implementing this for now.
         """
-        #self.SCI.send(config.data['opcodes']['start'],0)
+        #self.SCI.send(self.config.data['opcodes']['start'],0)
 
     """ END OF OPEN INTERFACE COMMANDS
     """
