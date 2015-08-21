@@ -12,7 +12,7 @@ print bytes
 print
 print
 print 'wat'
-bytes = [10,10,10]
+bytes = tuple([10,10,10])
 opcode = (137,)
 
 data = opcode + bytes

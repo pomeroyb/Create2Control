@@ -11,6 +11,8 @@ baud = 115200
 class Error(Exception):
     """Error"""
     pass
+
+
     
 class ROIDataByteError(Error):
     """Exception raised for errors in ROI data bytes.
@@ -39,15 +41,39 @@ class ROIFailedToReceiveError(Error):
     """
     def __init__(self,msg):
         self.msg = msg
-#17026722509
 
 
-with open(configFileName, 'r') as fileData:
-    try:
-        json.load(fileData, configData)
-        print 'Loaded config and opcodes'
-    except ValueError, e:
-        print 'shits fucked up yo. No config and data'
+        
+class Config(object):
+    """This class handles loading and saving config files that store the
+        Opcodes and other useful dicts
+    
+    """
+    
+    def __init__(self):
+        self.fname = 'config.json'
+        self.configData = None
+    
+    def load(self):
+        """ Loads a Create2 config file, that holds various dicts of opcodes.
+        
+        """
+        if os.path.isfile(self.fname):
+            #file exists, load it
+            with open(configFileName, 'r') as fileData:
+                try:
+                    json.load(fileData, configData)
+                    print 'Loaded config and opcodes'
+                except ValueError, e:
+                    print 'Could not load config'
+        else:
+            #couldn't find file
+            print "No config file found"
+            raise ValueError, e:
+                print "could not find config"
+    
+    
+
         
 class SerialCommandInterface(object):
     """This class handles sending commands to the Create2.
@@ -68,7 +94,7 @@ class SerialCommandInterface(object):
         temp_opcode = (opcode,)
         bytes = None
         
-        if data = None:
+        if data == None:
             #Sometimes opcodes don't need data. Since we can't add
             # a None type to a tuple, we have to make this check.
             bytes = temp_opcode
