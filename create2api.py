@@ -379,17 +379,26 @@ class Create2(object):
                     characters. Any blank characters should be represented with a space: ' '
         """
         noError = True
-        display_list = []
         if len(display_string) == 4:
-            display_list = list(display_string)
+            display_list = []
         else:
             #Too many or too few characters!
             noError = False
             raise ROIDataByteError("Invalid ASCII input (Must be EXACTLY four characters)")
         if noError:
             #Need to map ascii to numbers from the dict.
-            print 'map the ascii!'
-            #self.SCI.send(self.config.data['opcodes']['start'], tuple(display_list))
+            for i in range (0,4):
+                #Check that the character is in the list, if it is, add it.
+                #If it's not in the list, raise an error and replace it with a ' ' char.
+                if display_string[i] is in self.config.data['ascii table']:
+                    display_list[i] = self.config.data['ascii table'][display_string[i]]
+                else:
+                    # Char was not available.
+                    # Just print a blank space
+                    display_list[i] = self.config.data['ascii table'][' ']
+                    raise ROIDataByteError("Invalid ASCII input (char was not found in ascii table)")
+                
+            self.SCI.send(self.config.data['opcodes']['digit_led_ascii'], tuple(display_list))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
         
