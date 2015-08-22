@@ -3,6 +3,7 @@ import serial
 import struct
 import os
 import warnings
+import time
 
 
 class Error(Exception):
@@ -141,6 +142,7 @@ class Create2(object):
         self.SCI = SerialCommandInterface()
         self.config = Config()
         self.config.load()
+        self.sleep_timer = .5
     
     def destroy(self):
         """Closes up serial ports and terminates connection to the Create2
@@ -182,10 +184,18 @@ class Create2(object):
     
     
     def safe(self):
+        """Puts the Create 2 into safe mode. Blocks for a short (<.5 sec) amount of time so the
+            bot has time to change modes.
+        """
         self.SCI.send(self.config.data['opcodes']['safe'], None)
+        time.sleep(self.sleep_timer)
     
     def full(self):
+        """Puts the Create 2 into full mode. Blocks for a short (<.5 sec) amount of time so the
+            bot has time to change modes.
+        """
         self.SCI.send(self.config.data['opcodes']['full'], None)
+        time.sleep(self.sleep_timer)
     
     def clean(self):
         self.SCI.send(self.config.data['opcodes']['clean'], None)
@@ -290,7 +300,7 @@ class Create2(object):
                 raise ROIDataByteError("Invalid radius input")
 
         if noError:
-            data = struct.unpack('4B', struct.pack('>2H', velocity, radius))
+            data = struct.unpack('4B', struct.pack('>2H', v, r))
             #An example of what data looks like:
             #print data >> (255, 56, 1, 244)
             
@@ -301,6 +311,7 @@ class Create2(object):
             
             #Normally we would convert data to a tuple before sending it to SCI
             #   But struct.unpack already returns a tuple.
+            
             self.SCI.send(self.config.data['opcodes']['drive'], data)
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
