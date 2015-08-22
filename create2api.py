@@ -2,13 +2,16 @@ import json
 import serial
 import struct
 import os
+import warnings
 
 
 class Error(Exception):
     """Error"""
     pass
 
-
+def custom_format_warning(message, category, filename, lineno, file=None, line=None):
+    return str(message) + '\n'
+    #return ' %s:%s: %s:%s' % (filename, lineno, category.__name__, message)
     
 class ROIDataByteError(Error):
     """Exception raised for errors in ROI data bytes.
@@ -377,8 +380,14 @@ class Create2(object):
             Arguments:
                 display_string: A four character string to be displayed. This must be four
                     characters. Any blank characters should be represented with a space: ' '
+                    Due to the limited display, there is no control over upper or lowercase
+                    letters. create2api will automatically convert all chars to uppercase, but
+                    some letters (Such as 'B' and 'D') will still display as lowercase on the
+                    Create 2's display. C'est la vie.
         """
         noError = True
+        display_string = display_string.upper()
+        print display_string
         if len(display_string) == 4:
             display_list = []
         else:
@@ -389,15 +398,16 @@ class Create2(object):
             #Need to map ascii to numbers from the dict.
             for i in range (0,4):
                 #Check that the character is in the list, if it is, add it.
-                #If it's not in the list, raise an error and replace it with a ' ' char.
-                if display_string[i] is in self.config.data['ascii table']:
-                    display_list[i] = self.config.data['ascii table'][display_string[i]]
+                if display_string[i] in self.config.data['ascii table']:
+                    display_list.append(self.config.data['ascii table'][display_string[i]])
                 else:
-                    # Char was not available.
-                    # Just print a blank space
-                    display_list[i] = self.config.data['ascii table'][' ']
-                    raise ROIDataByteError("Invalid ASCII input (char was not found in ascii table)")
+                    # Char was not available. Just print a blank space
+                    # Raise an error so the software knows that the input was bad
+                    display_list.append(self.config.data['ascii table'][' '])
+                    warnings.formatwarning = custom_format_warning
+                    warnings.warn("Warning: Char '" + display_string[i] + "' was not found in ascii table")
                 
+            print display_list
             self.SCI.send(self.config.data['opcodes']['digit_led_ascii'], tuple(display_list))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
