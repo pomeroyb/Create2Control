@@ -106,6 +106,7 @@ class SerialCommandInterface(object):
         else:
             #Add the opcodes and data together
             bytes = temp_opcode + data
+        print bytes
         self.ser.write(struct.pack('B' * len(bytes), *bytes))
     
     def Read(self, num_bytes):
@@ -210,12 +211,13 @@ class Create2(object):
         """Sets the Create2's clock
             
             Args:
-                day: A string describing the day. Assumes all lowercase letters.
+                day: A string describing the day.
                 hour: A number from 0-23 (24 hour format)
                 minute: A number from 0-59
         """
-        data = []
+        data = [None, None, None]
         noError = True
+        day = day.lower()
         
         day_dict = dict(
             sunday = 0,
@@ -228,7 +230,7 @@ class Create2(object):
             )
         
         if day in day_dict:
-            data[0] = day
+            data[0] = day_dict[day]
         else:
             noError = False
             raise ROIDataByteError("Invalid day input")
@@ -246,7 +248,7 @@ class Create2(object):
             raise ROIDataByteError("Invalid minute input")
             
         if noError:
-            self.SCI.send(self.config.data['opcodes']['start'], tuple(data))
+            self.SCI.send(self.config.data['opcodes']['set_day_time'], tuple(data))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
     
@@ -387,7 +389,7 @@ class Create2(object):
         """
         noError = True
         display_string = display_string.upper()
-        print display_string
+        #print display_string
         if len(display_string) == 4:
             display_list = []
         else:
@@ -407,7 +409,7 @@ class Create2(object):
                     warnings.formatwarning = custom_format_warning
                     warnings.warn("Warning: Char '" + display_string[i] + "' was not found in ascii table")
                 
-            print display_list
+            #print display_list
             self.SCI.send(self.config.data['opcodes']['digit_led_ascii'], tuple(display_list))
         else:
             raise ROIFailedToSendError("Invalid data, failed to send")
