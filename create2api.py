@@ -160,6 +160,55 @@ class sensorPacketDecoder(object):
     
     """
     
+    def decode_bool(self, byte):
+    """ Decode a byte and return the value
+    
+        Arguments:
+            byte: The byte to be decoded
+        Returns: True or False
+    """
+        return bool(struct.unpack('B', byte)[0])
+    
+    def decode_unsigned_short(self, low, high):
+    """ Decode an 16 bit unsigned short from two bytes. 
+    
+        Arguments:
+            low: The low byte of the 2's complement. This is specified first
+                to make it easier when popping bytes off a list.
+            high: The high byte o the 2's complement.
+        Returns: 16bit unsigned short
+    """
+        return struct.unpack('>H', high + low)[0]
+        
+    def decode_short(self, low, high):
+    """ Decode an 16 bit short from two bytes. 
+    
+        Arguments:
+            low: The low byte of the 2's complement. This is specified first
+                to make it easier when popping bytes off a list.
+            high: The high byte o the 2's complement.
+        Returns: 16bit short
+    """
+        return struct.unpack('>h', high + low)[0]
+        
+    def decode_byte(self, byte):
+    """ Decode a signed byte into a signed char 
+    
+        Arguments:
+            byte: The byte to be decoded
+        Returns: A signed char
+    """
+        return struct.unpack('b', byte)[0]
+    
+    def decode_unsigned_byte(self, byte):
+    """ Decode an unsigned byte into an unsigned char 
+    
+        Arguments:
+            byte: The byte to be decoded
+        Returns: An unsigned char
+    """
+        return struct.unpack('B', byte)[0]
+    
     
         
         
@@ -172,6 +221,7 @@ class Create2(object):
     def __init__(self):
         #Nothing yet
         self.SCI = SerialCommandInterface()
+        self.decoder = sensorPacketDecoder()
         self.config = Config()
         self.config.load()
         self.sleep_timer = .5
