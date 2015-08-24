@@ -196,7 +196,7 @@ class sensorPacketDecoder(object):
     
         Arguments:
             byte: The byte to be decoded
-        Returns: A signed char
+        Returns: A signed int
     """
         return struct.unpack('b', byte)[0]
     
@@ -205,7 +205,7 @@ class sensorPacketDecoder(object):
     
         Arguments:
             byte: The byte to be decoded
-        Returns: An unsigned char
+        Returns: An unsigned int
     """
         return struct.unpack('B', byte)[0]
     
