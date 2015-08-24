@@ -467,7 +467,32 @@ class Create2(object):
     """
         
     def drive_straight(self, velocity):
+        """ Will make the Create2 drive straight at the given velocity
+        
+            Arguments:
+                velocity: Velocity of the Create2 in mm/s. Positive velocities are forward,
+                    negative velocities are reverse. Max speeds are still enforced by drive()
+        
+        """
         self.drive(velocity, 32767)
+        
+    def turn_clockwise(self, velocity):
+        """ Makes the Create2 turn in place clockwise at the given velocity
+        
+            Arguments:
+                velocity: Velocity of the Create2 in mm/s. Positive velocities are forward,
+                    negative velocities are reverse. Max speeds are still enforced by drive()
+        """
+        self.drive(velocity, -1)
+        
+    def turn_counter_clockwise(self, velocity):
+    """ Makes the Create2 turn in place counter clockwise at the given velocity
+    
+        Arguments:
+            velocity: Velocity of the Create2 in mm/s. Positive velocities are forward,
+                negative velocities are reverse. Max speeds are still enforced by drive()
+    """
+    self.drive(velocity, 1)
 
 
 
