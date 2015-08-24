@@ -1,3 +1,30 @@
+# The MIT License
+#
+# Copyright (c) 2007 Damon Kohler
+# Copyright (c) 2015 Jonathan Le Roux (Modifications for Create 2)
+# Copyright (c) 2015 Brandon Pomeroy
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+
+
+
 import json
 import serial
 import struct
@@ -127,6 +154,13 @@ class SerialCommandInterface(object):
         """Closes the serial connection.
         """
         self.ser.close()
+
+class sensorPacketDecoder(object):
+    """ A class that handles sensor packet decoding.
+    
+    """
+    
+    
         
         
 class Create2(object):
@@ -141,6 +175,7 @@ class Create2(object):
         self.config = Config()
         self.config.load()
         self.sleep_timer = .5
+        self.sensors = [] #TODO: Add this to config
     
     def destroy(self):
         """Closes up serial ports and terminates connection to the Create2
@@ -440,8 +475,8 @@ class Create2(object):
             Arguments:
                 packet_id: Identifies which of the 58 sensor data packets should be sent back by the OI. 
         """
-        # We only check to make sure that the packet ID is possible.
-        if packet_id >= 0 and if packet_id <= 107:
+        # Check to make sure that the packet ID is valid.
+        if packet_id in self.config.data['sensor group packet lengths']:
             # Valid packet, send request
             self.SCI.send(self.config.data['opcodes']['sensors'], tuple(packet_id))
         else:
@@ -486,13 +521,35 @@ class Create2(object):
         self.drive(velocity, -1)
         
     def turn_counter_clockwise(self, velocity):
-    """ Makes the Create2 turn in place counter clockwise at the given velocity
+        """ Makes the Create2 turn in place counter clockwise at the given velocity
     
-        Arguments:
-            velocity: Velocity of the Create2 in mm/s. Positive velocities are forward,
-                negative velocities are reverse. Max speeds are still enforced by drive()
-    """
-    self.drive(velocity, 1)
+            Arguments:
+                velocity: Velocity of the Create2 in mm/s. Positive velocities are forward,
+                    negative velocities are reverse. Max speeds are still enforced by drive()
+        """
+        self.drive(velocity, 1)
+    
+    def get_packet(self, packet_id):
+        """ Requests and reads a packet from the Create 2
+            
+            Arguments:
+                packet_id: The id of the packet you wish to collect.
+            
+            Returns: None if there was an error, else the decoded packet data.
+        """
+        
+        packet_size = None
+        packet_byte_data = None
+        if packet_id in self.config.data['sensor group packet lengths']:
+            # If a packet is in this dict, that means it is valid
+            packet_size = self.config.data['sensor group packet lengths'][packet_id]
+            packet_byte_data = list(self.SCI.Read(packet_size))
+            #TODO : Need to decode these packets...
+        else:
+            #The packet was invalid, raise an error
+            raise ROIDataByteError("Invalid packet ID")
+            return None
+
 
 
 
