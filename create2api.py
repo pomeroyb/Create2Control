@@ -78,9 +78,7 @@ class SerialCommandInterface(object):
     """This class handles sending commands to the Create2.
     
     """
-    
 
-    
     def __init__(self):
         com = 23
         baud = 115200
@@ -436,10 +434,19 @@ class Create2(object):
         """
         #self.SCI.send(self.config.data['opcodes']['start'],0)
     
-    def sensors(self):
-        """Not implementing this for now.
+    def sensors(self, packet_id):
+        """Requests the OI to send a packet of sensor data bytes.
+        
+            Arguments:
+                packet_id: Identifies which of the 58 sensor data packets should be sent back by the OI. 
         """
-        #self.SCI.send(self.config.data['opcodes']['start'],0)
+        # We only check to make sure that the packet ID is possible.
+        if packet_id >= 0 and if packet_id <= 107:
+            # Valid packet, send request
+            self.SCI.send(self.config.data['opcodes']['sensors'], tuple(packet_id))
+        else:
+            raise ROIFailedToSendError("Invalid packet (Must be between 0-107), failed to send")
+        
     
     def query_list(self):
         """Not implementing this for now.
