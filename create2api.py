@@ -96,7 +96,7 @@ class Config(object):
         else:
             #couldn't find file
             print "No config file found"
-            raise ValueError('could not find config')
+            raise ValueError('Could not find config')
     
     
 
@@ -161,52 +161,53 @@ class sensorPacketDecoder(object):
     """
     
     def decode_bool(self, byte):
-    """ Decode a byte and return the value
-    
-        Arguments:
-            byte: The byte to be decoded
-        Returns: True or False
-    """
+        """ Decode a byte and return the value
+        
+            Arguments:
+                byte: The byte to be decoded
+            Returns: True or False
+        """
         return bool(struct.unpack('B', byte)[0])
     
+
     def decode_unsigned_short(self, low, high):
-    """ Decode an 16 bit unsigned short from two bytes. 
-    
-        Arguments:
-            low: The low byte of the 2's complement. This is specified first
-                to make it easier when popping bytes off a list.
-            high: The high byte o the 2's complement.
-        Returns: 16bit unsigned short
-    """
+        """ Decode an 16 bit unsigned short from two bytes. 
+        
+            Arguments:
+                low: The low byte of the 2's complement. This is specified first
+                    to make it easier when popping bytes off a list.
+                high: The high byte o the 2's complement.
+            Returns: 16bit unsigned short
+        """
         return struct.unpack('>H', high + low)[0]
         
     def decode_short(self, low, high):
-    """ Decode an 16 bit short from two bytes. 
-    
-        Arguments:
-            low: The low byte of the 2's complement. This is specified first
-                to make it easier when popping bytes off a list.
-            high: The high byte o the 2's complement.
-        Returns: 16bit short
-    """
+        """ Decode an 16 bit short from two bytes. 
+        
+            Arguments:
+                low: The low byte of the 2's complement. This is specified first
+                    to make it easier when popping bytes off a list.
+                high: The high byte o the 2's complement.
+            Returns: 16bit short
+        """
         return struct.unpack('>h', high + low)[0]
         
     def decode_byte(self, byte):
-    """ Decode a signed byte into a signed char 
-    
-        Arguments:
-            byte: The byte to be decoded
-        Returns: A signed int
-    """
+        """ Decode a signed byte into a signed char 
+        
+            Arguments:
+                byte: The byte to be decoded
+            Returns: A signed int
+        """
         return struct.unpack('b', byte)[0]
     
     def decode_unsigned_byte(self, byte):
-    """ Decode an unsigned byte into an unsigned char 
-    
-        Arguments:
-            byte: The byte to be decoded
-        Returns: An unsigned int
-    """
+        """ Decode an unsigned byte into an unsigned char 
+        
+            Arguments:
+                byte: The byte to be decoded
+            Returns: An unsigned int
+        """
         return struct.unpack('B', byte)[0]
     
     
@@ -219,13 +220,13 @@ class Create2(object):
     """
     
     def __init__(self):
-        #Nothing yet
+        
         self.SCI = SerialCommandInterface()
         self.decoder = sensorPacketDecoder()
         self.config = Config()
         self.config.load()
         self.sleep_timer = .5
-        self.sensors = [] #TODO: Add this to config
+        self.sensors = dict(self.config.data['sensor data']) # Load a raw sensor dict. None of these values are correct.
     
     def destroy(self):
         """Closes up serial ports and terminates connection to the Create2
@@ -599,7 +600,6 @@ class Create2(object):
             #The packet was invalid, raise an error
             raise ROIDataByteError("Invalid packet ID")
             return None
-
 
 
 
