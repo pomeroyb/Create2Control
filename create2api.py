@@ -547,6 +547,97 @@ class sensorPacketDecoder(object):
             Returns: unsigned 16bit short. Estimated charge capacity of battery in milliAmp-hours
         """
         return decode_unsigned_short(low, high)
+        
+    def decode_packet_27(self, low, high):
+        """ Decode Packet 27 (wall signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of wall signal from 0-1023
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_28(self, low, high):
+        """ Decode Packet 28 (cliff left signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of cliff left signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_29(self, low, high):
+        """ Decode Packet 29 (cliff front left signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of cliff front left signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_30(self, low, high):
+        """ Decode Packet 30 (cliff front right signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of cliff front right signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_31(self, low, high):
+        """ Decode Packet 31 (cliff right signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of cliff right signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_32(self, data):
+        """ Decode Packet 32 (Unused) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: None
+        """
+        return None
+        
+    def decode_packet_33(self, data):
+        """ Decode Packet 33 (Unused) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: None
+        """
+        return None
+        
+    def decode_packet_34(self, data):
+        """ Decode Packet 34 (charging sources available) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: A dict of 'charging sources available'
+        """
+        byte = struct.unpack('B', byte)[0]
+        return_dict = {
+            'home base': bool(byte & 0x02),
+            'internal charger': bool(byte & 0x01)}
+        
+        return return_dict
+        
 
     def decode_packet_52(self, data):
         """ Decode Packet 52 (infared char left) and return its value
