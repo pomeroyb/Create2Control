@@ -199,8 +199,7 @@ class sensorPacketDecoder(object):
         elif id == 6:
             print id # size 52, contains 7-42
         elif id == 7:
-            print id
-            #####SINGLE PACKETS BEGIN IN HERE
+            sensor_data['wheel drop and bumps'] = decode_packet_7(byte_data.pop())
         elif id == 8:
             print id
         elif id == 9:
@@ -321,7 +320,7 @@ class sensorPacketDecoder(object):
         return return_dict
         
     def decode_packet_7(self, data):
-        """ Decode Packet 7 and return its value
+        """ Decode Packet 7 (wheel drop and bumps) and return its value
         
             Arguments:
                 data: The bytes to decode
@@ -335,8 +334,240 @@ class sensorPacketDecoder(object):
             'bump left': bool(byte & 0x02),
             'bump right': bool(byte & 0x01)}
         return return_dict
+
+    def decode_packet_8(self, data):
+        """ Decode Packet 8 (wall seen) and return its value
         
-    
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True or False
+        """
+        return decode_bool(data)
+
+    def decode_packet_9(self, data):
+        """ Decode Packet 9 (cliff left) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True or False
+        """
+        return decode_bool(data)   
+
+    def decode_packet_10(self, data):
+        """ Decode Packet 10 (cliff front left) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True or False
+        """
+        return decode_bool(data)
+
+    def decode_packet_11(self, data):
+        """ Decode Packet 11 (cliff front right) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True or False
+        """
+        return decode_bool(data)
+
+    def decode_packet_12(self, data):
+        """ Decode Packet 12 (cliff right) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True or False
+        """
+        return decode_bool(data)
+
+    def decode_packet_13(self, data):
+        """ Decode Packet 13 (virtual wall) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True or False
+        """
+        return decode_bool(data)
+        
+    def decode_packet_14(self, data):
+        """ Decode Packet 14 (wheel overcurrents) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: A dict of 'wheel overcurrents'
+        """
+        byte = struct.unpack('B', byte)[0]
+        return_dict = {
+            'left wheel': bool(byte & 0x10),
+            'right wheel': bool(byte & 0x08),
+            'main brush': bool(byte & 0x04),
+            'side brush': bool(byte & 0x01)}
+        return return_dict
+        
+    def decode_packet_15(self, data):
+        """ Decode Packet 15 (dirt detect) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: unsigned Byte (0-255)
+        """
+        return decode_unsigned_byte(data)        
+
+    def decode_packet_16(self, data):
+        """ Decode Packet 16 (unused byte) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: None
+        """
+        return None  
+
+    def decode_packet_17(self, data):
+        """ Decode Packet 17 (infared char omni) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: unsigned Byte (0-255)
+        """
+        return decode_unsigned_byte(data)
+
+    def decode_packet_18(self, data):
+        """ Decode Packet 18 (buttons) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: a dict of 'buttons'
+        """
+        byte = struct.unpack('B', byte)[0]
+        return_dict = {
+            'clock': bool(byte & 0x80),
+            'schedule': bool(byte & 0x40),
+            'day': bool(byte & 0x20),
+            'hour': bool(byte & 0x10),
+            'minute': bool(byte & 0x08),
+            'dock': bool(byte & 0x04),
+            'spot': bool(byte & 0x02),
+            'clean': bool(byte & 0x01)}
+        
+        return return_dict
+
+    def decode_packet_19(self, low, high):
+        """ Decode Packet 19 (distance) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: signed 16bit short
+        """
+        return decode_short(low, high)
+
+    def decode_packet_20(self, low, high):
+        """ Decode Packet 20 (angle) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: signed 16 bit short. Represents difference between distance two wheels travelled
+        """
+        return decode_short(low, high)
+        
+    def decode_packet_21(self, data):
+        """ Decode Packet 21 (charging state) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: A value from 0-5, that describes the charging state
+        """
+        return decode_unsigned_byte(data)
+
+    def decode_packet_22(self, low, high):
+        """ Decode Packet 22 (voltage) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short, battery voltage in mV
+        """
+        return decode_unsigned_short(low, high)
+
+    def decode_packet_23(self, low, high):
+        """ Decode Packet 23 (current) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: signed 16bit short. Positive currents is charging, negative is discharging
+        """
+        return decode_short(low, high)
+        
+    def decode_packet_24(self, data):
+        """ Decode Packet 24 (temperature) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: A signed byte, Create 2's battery temperature in Celsius
+        """
+        return decode_byte(data)
+        
+    def decode_packet_25(self, low, high):
+        """ Decode Packet 25 (battery charge) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Current charge of battery in milliAmp-hours
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_26(self, low, high):
+        """ Decode Packet 26 (battery capacity) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Estimated charge capacity of battery in milliAmp-hours
+        """
+        return decode_unsigned_short(low, high)
+
+    def decode_packet_52(self, data):
+        """ Decode Packet 52 (infared char left) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: unsigned Byte (0-255)
+        """
+        return decode_unsigned_byte(data)          
+
+    def decode_packet_53(self, data):
+        """ Decode Packet 15 (dirt detect) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: unsigned Byte (0-255)
+        """
+        return decode_unsigned_byte(data)  
+        
     def decode_bool(self, byte):
         """ Decode a byte and return the value
         
@@ -364,7 +595,7 @@ class sensorPacketDecoder(object):
             Arguments:
                 low: The low byte of the 2's complement. This is specified first
                     to make it easier when popping bytes off a list.
-                high: The high byte o the 2's complement.
+                high: The high byte of the 2's complement.
             Returns: 16bit short
         """
         return struct.unpack('>h', high + low)[0]
