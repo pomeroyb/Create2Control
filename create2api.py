@@ -1,4 +1,4 @@
-# The MIT License
+        # The MIT License
 #
 # Copyright (c) 2007 Damon Kohler
 # Copyright (c) 2015 Jonathan Le Roux (Modifications for Create 2)
@@ -160,14 +160,182 @@ class sensorPacketDecoder(object):
     
     """
     
-    def decode_packet(self, packet_id, byte_data):
+    def __init__(self, sensor_packet_lengths):
+        self.lengths = sensor_packet_lengths
+    
+    def decode_packet(self, packet_id, byte_data, sensor_data):
         """ Decodes an OI packet
             
             Arguments:
                 packet_id: The id of the packet. Duh.
                 byte_data: The bytes that the Create 2 sent over serial
+                sensor_data: A dict containg the sensor states of the Create 2
+            Returns:
+                A dict containing the updated sensor states of the Create 2
         """
-        #TODO: Finish this.
+        return_dict = None
+        id = packet_id  # For shorter lines
+        
+        # Depending on the packet id, we will need to do different decoding.
+        # Packets 1-6 and 100, 101, 106, and 107 are special cases where they
+        #   contain groups of packets.
+        #
+        # Other packets (7-58) are single packets, but some of them have two byte
+        #   data, and also need special treatment.
+        
+        # Hold onto your hats. This is gonna get long fast.
+        if id == 0:
+            print id # Size 26, contains packet 7-26
+        elif id == 1:
+            print id # Size 10, contais 7-16
+        elif id == 2:
+            print id # size 6, contains 17-20
+        elif id == 3:
+            print id # size 10, contains 21-26
+        elif id == 4:
+            print id # size 14, contains 27-34
+        elif id == 5:
+            print id # size 12, contains 35-42
+        elif id == 6:
+            print id # size 52, contains 7-42
+        elif id == 7:
+            print id
+            #####SINGLE PACKETS BEGIN IN HERE
+        elif id == 8:
+            print id
+        elif id == 9:
+            print id
+        elif id == 10:
+            print id
+        elif id == 11:
+            print id
+        elif id == 12:
+            print id
+        elif id == 13:
+            print id
+        elif id == 14:
+            print id
+        elif id == 15:
+            print id
+        elif id == 16:
+            print id
+        elif id == 17:
+            print id
+        elif id == 18:
+            print id
+        elif id == 19:
+            print id
+        elif id == 20:
+            print id
+        elif id == 21:
+            print id
+        elif id == 22:
+            print id
+        elif id == 23:
+            print id
+        elif id == 24:
+            print id
+        elif id == 25:
+            print id
+        elif id == 26:
+            print id
+        elif id == 27:
+            print id
+        elif id == 28:
+            print id
+        elif id == 29:
+            print id
+        elif id == 30:
+            print id
+        elif id == 31:
+            print id
+        elif id == 32:
+            print id
+        elif id == 33:
+            print id
+        elif id == 34:
+            print id
+        elif id == 35:
+            print id
+        elif id == 36:
+            print id
+        elif id == 37:
+            print id
+        elif id == 38:
+            print id
+        elif id == 39:
+            print id
+        elif id == 40:
+            print id
+        elif id == 41:
+            print id
+        elif id == 42:
+            print id
+        elif id == 43:
+            print id
+        elif id == 44:
+            print id
+        elif id == 45:
+            print id
+        elif id == 46:
+            print id
+        elif id == 47:
+            print id
+        elif id == 48:
+            print id
+        elif id == 49:
+            print id
+        elif id == 50:
+            print id
+        elif id == 51:
+            print id
+        elif id == 52:
+            print id
+        elif id == 53:
+            print id
+        elif id == 54:
+            print id
+        elif id == 55:
+            print id
+        elif id == 56:
+            print id
+        elif id == 57:
+            print id
+        elif id == 58:
+            print id
+            ##### Single Packets END
+        elif id == 100:
+            print id # size 80, contains 7-58 (ALL)
+        elif id == 101:
+            print id # size 28, contains 43-58
+        elif id == 106:
+            print id # size 12, contains 46-51
+        elif id == 107:
+            print id # size 9, contains 54-58
+        else:
+            print "No valid packet!"
+            return_dict = sensor_data
+        
+        # No, Python doesn't need a switch case at all.
+        
+        return return_dict
+        
+    def decode_packet_7(self, data):
+        """ Decode Packet 7 and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: A dict of 'wheel drop and bumps'
+        """
+        data = struct.unpack('B', data)[0]
+        return_dict = {
+            'drop left': bool(byte & 0x08),
+            'drop right': bool(byte & 0x04),
+            'bump left': bool(byte & 0x02),
+            'bump right': bool(byte & 0x01)}
+        return return_dict
+        
     
     def decode_bool(self, byte):
         """ Decode a byte and return the value
@@ -231,11 +399,12 @@ class Create2(object):
     def __init__(self):
         
         self.SCI = SerialCommandInterface()
-        self.decoder = sensorPacketDecoder()
         self.config = Config()
         self.config.load()
+        self.decoder = sensorPacketDecoder(dict(self.config.data['sensor group packet lengths']))
+        self.sensor_state = dict(self.config.data['sensor data']) # Load a raw sensor dict. None of these values are correct.
         self.sleep_timer = .5
-        self.sensors = dict(self.config.data['sensor data']) # Load a raw sensor dict. None of these values are correct.
+        
     
     def destroy(self):
         """Closes up serial ports and terminates connection to the Create2
@@ -604,7 +773,8 @@ class Create2(object):
             # If a packet is in this dict, that means it is valid
             packet_size = self.config.data['sensor group packet lengths'][packet_id]
             packet_byte_data = list(self.SCI.Read(packet_size))
-            #TODO : Need to decode these packets...
+            # Once we have the byte data, we need to decode the packet and save the new sensor state
+            self.sensor_state = self.decoder.decode_packet(packet_id, packet_byte_data, self.sensor_state)
         else:
             #The packet was invalid, raise an error
             raise ROIDataByteError("Invalid packet ID")
