@@ -8,9 +8,6 @@ bot = create2api.Create2()
 bot.start()
 bot.safe()
 
-# bot.digit_led_ascii('DICK')
-# time.sleep(10)
-# bot.digit_led_ascii('CUNT')
 
 # time.sleep(10)
 
@@ -19,9 +16,6 @@ bot.safe()
 print 'Voltage: ' + str(bot.sensors['voltage'])
 print 'OI mode: ' + str(bot.sensors['oi mode'])
 print 'Battery temperature: ' + str(bot.sensors['temperature'])
-
-
-
 
 # print 'forwad'
 # bot.drive_straight(200)

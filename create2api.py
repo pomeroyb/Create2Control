@@ -160,6 +160,15 @@ class sensorPacketDecoder(object):
     
     """
     
+    def decode_packet(self, packet_id, byte_data):
+        """ Decodes an OI packet
+            
+            Arguments:
+                packet_id: The id of the packet. Duh.
+                byte_data: The bytes that the Create 2 sent over serial
+        """
+        #TODO: Finish this.
+    
     def decode_bool(self, byte):
         """ Decode a byte and return the value
         
