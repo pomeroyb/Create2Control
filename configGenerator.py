@@ -137,6 +137,59 @@ SENSOR_GROUP_PACKET_LENGTHS = {
     102: 12,
     103: 9 }
 
+SENSOR_DATA = {
+    'wheel drop and bumps' : {'drop left' : False, 'drop right' : False, 'bump left' : False, 'bump right' : False},
+    'wall seen' : False,
+    'cliff left' : False,
+    'cliff front left' : False,
+    'cliff front right' : False,
+    'cliff right' : False,
+    'virtual wall' : False,
+    'wheel overcurrents' : {'left wheel' : False, 'right wheel' : False, 'main brush' : False, 'side brush' : False},
+    'dirt detect' : 0,
+    'infared char omni' : 0,
+    'infared char left' : 0,
+    'infared char right' : 0,
+    'buttons' : {'clock' : False, 'schedule' : False, 'day' : False, 'hour' : False, 'minute' : False, 'dock' : False,
+        'spot' : False, 'clean' : False},
+    'distance' : 0,
+    'angle' : 0,
+    'charging state' : 0,
+    'voltage' : 0,
+    'current' : 0,
+    'temperature' : 0,
+    'battery charge' : 0,
+    'battery capacity' : 0,
+    'wall signal' : 0,
+    'cliff left signal' : 0,
+    'cliff front left signal' : 0,
+    'cliff front right signal' : 0,
+    'cliff right signal' : 0,
+    'charging sources available' : {'home base' : False, 'internal charger' : False},
+    'oi mode' : 0,
+    'song number' : 0,
+    'song playing' : False,
+    'number of stream packets' : 0,
+    'requested velocity' : 0,
+    'requested radius' : 0,
+    'requested right velocity' : 0,
+    'requested left velocity' : 0,
+    'left encoder counts' : 0,
+    'right encoder counts' : 0,
+    'light bumper' : {'right' : False, 'front right' : False, 'center right' : False, 'center left' : False, 'front left' : False, 'left' : False},
+    'light bump left signal' : 0,
+    'light bump front left signal' : 0,
+    'light bump center left signal' : 0,
+    'light bump center right signal' : 0,
+    'light bump front right signal' : 0,
+    'light bump right signal' : 0,
+    'left motor current' : 0,
+    'right motor current' : 0,
+    'main brush motor current' : 0,
+    'side brush motor current' : 0,
+    'stasis' : False
+    }
+
 CHARGING_STATES = (
     'not-charging',
     'charging-recovery',
@@ -239,11 +292,12 @@ REMOTE_OPCODES = {
     162: 'virtual-wall'
     }              
 
-data = {'opcodes': {}, 'ascii table': {}, 'sensor group packet lengths': {}, 'charging states': {}, 'oi modes': {}, 'midi table': {}, 'remote opcodes': {}}
+data = {'opcodes': {}, 'ascii table': {}, 'sensor group packet lengths': {}, 'sensor data': {}, 'charging states': {}, 'oi modes': {}, 'midi table': {}, 'remote opcodes': {}}
 
 data['opcodes']  = OPCODES
 data['ascii table'] = ASCII_TABLE
 data['sensor group packet lengths'] = SENSOR_GROUP_PACKET_LENGTHS
+data['sensor data'] = SENSOR_DATA
 data['charging states'] = CHARGING_STATES
 data['oi modes'] = OI_MODES
 data['midi table'] = MIDI_TABLE
