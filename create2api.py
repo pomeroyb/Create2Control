@@ -201,104 +201,132 @@ class sensorPacketDecoder(object):
         elif id == 7:
             sensor_data['wheel drop and bumps'] = decode_packet_7(byte_data.pop())
         elif id == 8:
-            print id
+            sensor_data['wall seen'] = decode_packet_8(byte_data.pop())
         elif id == 9:
-            print id
+            sensor_data['cliff left'] = decode_packet_9(byte_data.pop())
         elif id == 10:
-            print id
+            sensor_data['cliff front left'] = decode_packet_10(byte_data.pop())
         elif id == 11:
-            print id
+            sensor_data['cliff front right'] = decode_packet_11(byte_data.pop())
         elif id == 12:
-            print id
+            sensor_data['cliff right'] = decode_packet_12(byte_data.pop())
         elif id == 13:
-            print id
+            sensor_data['virtual wall'] = decode_packet_13(byte_data.pop())
         elif id == 14:
-            print id
+            sensor_data['wheel overcurrents'] = decode_packet_14(byte_data.pop())
         elif id == 15:
-            print id
+            sensor_data['dirt detect'] = decode_packet_15(byte_data.pop())
         elif id == 16:
-            print id
+            sensor_data['infared char omni'] = decode_packet_16(byte_data.pop())print id
         elif id == 17:
-            print id
+            sensor_data['infared char left'] = decode_packet_17(byte_data.pop())
         elif id == 18:
-            print id
+            sensor_data['buttons'] = decode_packet_18(byte_data.pop())
         elif id == 19:
-            print id
+            #2
+            sensor_data['distance'] = decode_packet_19(byte_data.pop(), byte_data.pop())
         elif id == 20:
-            print id
+            #2
+            sensor_data['angle'] = decode_packet_20(byte_data.pop(), byte_data.pop())
         elif id == 21:
-            print id
+            sensor_data['charging state'] = decode_packet_21(byte_data.pop())
         elif id == 22:
-            print id
+            #2
+            sensor_data['voltage'] = decode_packet_22(byte_data.pop(), byte_data.pop())
         elif id == 23:
-            print id
+            #2
+            sensor_data['current'] = decode_packet_23(byte_data.pop(), byte_data.pop())
         elif id == 24:
-            print id
+            sensor_data['temperature'] = decode_packet_24(byte_data.pop())
         elif id == 25:
-            print id
+            #2
+            sensor_data['battery charge'] = decode_packet_25(byte_data.pop(), byte_data.pop())
         elif id == 26:
-            print id
+            #2
+            sensor_data['battery capacity'] = decode_packet_26(byte_data.pop(), byte_data.pop())
         elif id == 27:
-            print id
+            #2
+            sensor_data['wall signal'] = decode_packet_27(byte_data.pop(), byte_data.pop())
         elif id == 28:
-            print id
+            #2
+            sensor_data['cliff left signal'] = decode_packet_28(byte_data.pop(), byte_data.pop())
         elif id == 29:
-            print id
+            #2
+            sensor_data['cliff front left signal'] = decode_packet_29(byte_data.pop(), byte_data.pop())
         elif id == 30:
-            print id
+            #2
+            sensor_data['cliff front right signal'] = decode_packet_30(byte_data.pop(), byte_data.pop())
         elif id == 31:
-            print id
+            #2
+            sensor_data['cliff right signal'] = decode_packet_31(byte_data.pop(), byte_data.pop())
         elif id == 32:
-            print id
+            temp = decode_packet_32(byte_data.pop())
         elif id == 33:
-            print id
+            #2
+            temp = decode_packet_33(byte_data.pop())
         elif id == 34:
-            print id
+            sensor_data['charging sources available'] = decode_packet_34(byte_data.pop())
         elif id == 35:
-            print id
+            sensor_data['oi mode'] = decode_packet_35(byte_data.pop())
         elif id == 36:
-            print id
+            sensor_data['song number'] = decode_packet_36(byte_data.pop())
         elif id == 37:
-            print id
+            sensor_data['song playing'] = decode_packet_37(byte_data.pop())
         elif id == 38:
-            print id
+            sensor_data['number of stream packets'] = decode_packet_38(byte_data.pop())
         elif id == 39:
+            #2
             print id
         elif id == 40:
+            #2
             print id
         elif id == 41:
+            #2
             print id
         elif id == 42:
+            #2
             print id
         elif id == 43:
+            #2
             print id
         elif id == 44:
+            #2
             print id
         elif id == 45:
             print id
         elif id == 46:
+            #2
             print id
         elif id == 47:
+            #2
             print id
         elif id == 48:
+            #2
             print id
         elif id == 49:
+            #2
             print id
         elif id == 50:
+            #2
             print id
         elif id == 51:
+            #2
             print id
         elif id == 52:
             print id
         elif id == 53:
             print id
         elif id == 54:
+            #2
             print id
         elif id == 55:
+            #2
             print id
         elif id == 56:
+            #2
             print id
         elif id == 57:
+            #2
             print id
         elif id == 58:
             print id
@@ -841,7 +869,7 @@ class sensorPacketDecoder(object):
         return decode_unsigned_byte(data)          
 
     def decode_packet_53(self, data):
-        """ Decode Packet 15 (dirt detect) and return its value
+        """ Decode Packet 53 (dirt detect) and return its value
         
             Arguments:
                 data: The bytes to decode
