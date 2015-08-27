@@ -637,8 +637,199 @@ class sensorPacketDecoder(object):
             'internal charger': bool(byte & 0x01)}
         
         return return_dict
-        
 
+    def decode_packet_35(self, data):
+        """ Decode Packet 35 (OI Mode) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: A unsigned byte, the current OI mode id from 0-3
+        """
+        return decode_unsigned_byte(data)
+        
+    def decode_packet_36(self, data):
+        """ Decode Packet 36 (Song number) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: An unsigned byte, the current song id playing (0-15)
+        """
+        return decode_unsigned_byte(data)
+        
+    def decode_packet_37(self, data):
+        """ Decode Packet 35 (Song playing) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True or False, stating whether the song is playing
+        """
+        return decode_bool(data)
+        
+    def decode_packet_38(self, data):
+        """ Decode Packet 38 (Number of stream packets) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: An unsigned byte, the number of data stream packets
+        """
+        return decode_unsigned_byte(data)
+        
+    def decode_packet_39(self, low, high):
+        """ Decode Packet 39 (requested velocity) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Velocity most recently requested by Drive()
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_40(self, low, high):
+        """ Decode Packet 40 (requested radius) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Radius most recently requested by Drive()
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_41(self, low, high):
+        """ Decode Packet 41 (Requested right velocity) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Right wheel velocity recently requested by DriveDirect()
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_42(self, low, high):
+        """ Decode Packet 42 (Requested left velocity) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Left wheel velocity recently requested by DriveDirect()
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_43(self, low, high):
+        """ Decode Packet 41 (Left Encoder Counts) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Cumulative number of raw left encoder counts. Rolls over
+                        to 0 after it passes 65535
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_44(self, low, high):
+        """ Decode Packet 44 (Right Encoder Counts) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Cumulative number of raw right encoder counts. Rolls over
+                        to 0 after it passes 65535
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_45(self, data):
+        """ Decode Packet 45 (infared char left) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: A dict of 'light bumper'
+        """
+        byte = struct.unpack('B', byte)[0]
+        return_dict = {
+            'right': bool(byte & 0x20),
+            'front right': bool(byte & 0x10),
+            'center right': bool(byte & 0x08),
+            'center left': bool(byte & 0x04),
+            'front left': bool(byte & 0x02),
+            'left': bool(byte & 0x01)}
+        return return_dict
+
+    def decode_packet_46(self, low, high):
+        """ Decode Packet 46 (Light Bump Left Signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of light bump left signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_47(self, low, high):
+        """ Decode Packet 47 (Light Bump Front Left Signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of light bump front left signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_48(self, low, high):
+        """ Decode Packet 48 (Light Bump Center Left Signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of light bump center left signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_49(self, low, high):
+        """ Decode Packet 49 (Light Bump Center Right Signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of light bump center right signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_50(self, low, high):
+        """ Decode Packet 50 (Light Bump Front Right Signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of light bump front right signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
+    def decode_packet_51(self, low, high):
+        """ Decode Packet 51 (Light Bump Right Signal) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: unsigned 16bit short. Strength of light bump right signal from 0-4095
+        """
+        return decode_unsigned_short(low, high)
+        
     def decode_packet_52(self, data):
         """ Decode Packet 52 (infared char left) and return its value
         
@@ -658,6 +849,64 @@ class sensorPacketDecoder(object):
             Returns: unsigned Byte (0-255)
         """
         return decode_unsigned_byte(data)  
+
+    def decode_packet_54(self, low, high):
+        """ Decode Packet 54 (Left Motor Current) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: signed 16bit short. Strength of left motor current from -32768 - 32767 mA
+        """
+        return decode_short(low, high)
+        
+
+    def decode_packet_55(self, low, high):
+        """ Decode Packet 55 (Right Motor Current) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: signed 16bit short. Strength of right motor current from -32768 - 32767 mA
+        """
+        return decode_short(low, high)
+        
+
+    def decode_packet_56(self, low, high):
+        """ Decode Packet 54 (Main Brush Motor Current) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: signed 16bit short. Strength of main brush motor current from -32768 - 32767 mA
+        """
+        return decode_short(low, high)
+        
+
+    def decode_packet_57(self, low, high):
+        """ Decode Packet 57 (Side Brush Motor Current) and return its value
+        
+            Arguments:
+                low: Low byte of the 2's complement. Low is specified first to make pop() easier
+                high: High byte of the 2's complement
+        
+            Returns: signed 16bit short. Strength of side brush motor current from -32768 - 32767 mA
+        """
+        return decode_short(low, high)
+        
+    def decode_packet_58(self, data):
+        """ Decode Packet 58 (Stasis) and return its value
+        
+            Arguments:
+                data: The bytes to decode
+        
+            Returns: True if robot is making forward progress, else False
+        """
+        return decode_bool(data)  
+
         
     def decode_bool(self, byte):
         """ Decode a byte and return the value
