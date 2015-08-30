@@ -18,4 +18,4 @@ print '========================================='
 bot.get_packet(100)
 
 print '==============Updated Sensors=============='
-#print json.dumps(bot.sensor_state, indent=4)
+print json.dumps(bot.sensor_state, indent=4)
