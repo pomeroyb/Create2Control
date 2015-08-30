@@ -1496,7 +1496,7 @@ class Create2(object):
             # Valid packet, send request
             self.SCI.send(self.config.data['opcodes']['sensors'], tuple(packet_id))
         else:
-            raise ROIFailedToSendError("Invalid packet (Must be between 0-107), failed to send")
+            raise ROIFailedToSendError("Invalid packet id, failed to send")
         
     
     def query_list(self):
@@ -1559,6 +1559,9 @@ class Create2(object):
         if packet_id in self.config.data['sensor group packet lengths']:
             # If a packet is in this dict, that means it is valid
             packet_size = self.config.data['sensor group packet lengths'][packet_id]
+            #Let the robot know that we want some sensor data!
+            self.sensors(packet_id)
+            #Read the data
             packet_byte_data = list(self.SCI.Read(packet_size))
             # Once we have the byte data, we need to decode the packet and save the new sensor state
             self.sensor_state = self.decoder.decode_packet(packet_id, packet_byte_data, self.sensor_state)
