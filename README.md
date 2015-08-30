@@ -61,6 +61,7 @@ bot.destroy()
 - Drive
 - Motors PWM
 - Digit LED ASCII
+- Sensors
 
 ##Unimplemented OI codes
 - Schedule
@@ -73,7 +74,6 @@ bot.destroy()
 - Buttons
 - Song
 - Play
-- Sensors
 - Query List
 - Stream
 - Pause/Resume Stream
