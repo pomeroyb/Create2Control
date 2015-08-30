@@ -156,7 +156,10 @@ class SerialCommandInterface(object):
         self.ser.close()
 
 class sensorPacketDecoder(object):
-    """ A class that handles sensor packet decoding.
+    """ A class that handles sensor packet decoding. 
+        
+        This class may, in the future, become a private class. Users shouldn't be interacting with
+        this class directly -- scripts should use Create2.get_packet() instead.
     
     """
     
@@ -169,7 +172,7 @@ class sensorPacketDecoder(object):
             Arguments:
                 packet_id: The id of the packet. Duh.
                 byte_data: The bytes that the Create 2 sent over serial
-                sensor_data: A dict containg the sensor states of the Create 2
+                sensor_data: A dict containing the sensor states of the Create 2
             Returns:
                 A dict containing the updated sensor states of the Create 2
         """
