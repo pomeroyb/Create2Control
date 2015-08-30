@@ -38,7 +38,7 @@ class Error(Exception):
     pass
 
 def custom_format_warning(message, category, filename, lineno, file=None, line=None):
-    return str(message) + '\n'
+    return 'Line ' + str(lineno) + ': ' + str(message) + '\n'
     #return ' %s:%s: %s:%s' % (filename, lineno, category.__name__, message)
     
 class ROIDataByteError(Error):
@@ -177,7 +177,7 @@ class sensorPacketDecoder(object):
                 A dict containing the updated sensor states of the Create 2
         """
         return_dict = None
-        id = packet_id  # For shorter lines
+        id = int(packet_id)  # Convert the packet id from a string to an int
         
         # Depending on the packet id, we will need to do different decoding.
         # Packets 1-6 and 100, 101, 106, and 107 are special cases where they
@@ -437,7 +437,7 @@ class sensorPacketDecoder(object):
             ##### Single Packets END
         elif id == 100:
             # size 80, contains 7-58 (ALL)
-            sensor_data['stasis'] = decode_packet_58(byte_data.pop())
+            sensor_data['stasis'] = self.decode_packet_58(byte_data.pop())
             sensor_data['side brush motor current'] = decode_packet_57(byte_data.pop(), byte_data.pop())
             sensor_data['main brush motor current'] = decode_packet_56(byte_data.pop(), byte_data.pop())
             sensor_data['right motor current'] = decode_packet_55(byte_data.pop(), byte_data.pop())
@@ -527,7 +527,8 @@ class sensorPacketDecoder(object):
             sensor_data['left motor current'] = decode_packet_54(byte_data.pop(), byte_data.pop())
             
         else:
-            print "No valid packet!"
+            warnings.formatwarning = custom_format_warning
+            warnings.warn("Warning: Packet '" + id + "' is not a valid packet!")
             return_dict = sensor_data
         
         # No, Python doesn't need a switch case at all.
@@ -1121,7 +1122,7 @@ class sensorPacketDecoder(object):
         
             Returns: True if robot is making forward progress, else False
         """
-        return decode_bool(data)  
+        return self.decode_bool(data)  
 
         
     def decode_bool(self, byte):
@@ -1491,9 +1492,12 @@ class Create2(object):
             Arguments:
                 packet_id: Identifies which of the 58 sensor data packets should be sent back by the OI. 
         """
+        # Need to make sure the packet_id is a string
+        packet_id = str(packet_id)
         # Check to make sure that the packet ID is valid.
         if packet_id in self.config.data['sensor group packet lengths']:
-            # Valid packet, send request
+            # Valid packet, send request (But convert it back to an int in a list first)
+            packet_id = [int(packet_id)]
             self.SCI.send(self.config.data['opcodes']['sensors'], tuple(packet_id))
         else:
             raise ROIFailedToSendError("Invalid packet id, failed to send")
@@ -1553,7 +1557,7 @@ class Create2(object):
             
             Returns: None if there was an error, else the decoded packet data.
         """
-        
+        packet_id = str(packet_id)
         packet_size = None
         packet_byte_data = None
         if packet_id in self.config.data['sensor group packet lengths']:
