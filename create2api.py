@@ -132,7 +132,7 @@ class SerialCommandInterface(object):
         else:
             #Add the opcodes and data together
             bytes = temp_opcode + data
-        print bytes
+        #print bytes
         self.ser.write(struct.pack('B' * len(bytes), *bytes))
     
     def Read(self, num_bytes):
