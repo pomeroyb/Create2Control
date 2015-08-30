@@ -185,19 +185,119 @@ class sensorPacketDecoder(object):
         
         # Hold onto your hats. This is gonna get long fast.
         if id == 0:
-            print id # Size 26, contains packet 7-26
+            # Size 26, contains packet 7-26
+            # We decode the data in reverse order to make pop() simpler
+            sensor_data['battery capacity'] = decode_packet_26(byte_data.pop(), byte_data.pop())
+            sensor_data['battery charge'] = decode_packet_25(byte_data.pop(), byte_data.pop())
+            sensor_data['temperature'] = decode_packet_24(byte_data.pop())
+            sensor_data['current'] = decode_packet_23(byte_data.pop(), byte_data.pop())
+            sensor_data['voltage'] = decode_packet_22(byte_data.pop(), byte_data.pop())
+            sensor_data['charging state'] = decode_packet_21(byte_data.pop())
+            sensor_data['angle'] = decode_packet_20(byte_data.pop(), byte_data.pop())
+            sensor_data['distance'] = decode_packet_19(byte_data.pop(), byte_data.pop())
+            sensor_data['buttons'] = decode_packet_18(byte_data.pop())
+            sensor_data['infared char omni'] = decode_packet_17(byte_data.pop())
+            temp = decode_packet_16(byte_data.pop())
+            sensor_data['dirt detect'] = decode_packet_15(byte_data.pop())
+            sensor_data['wheel overcurrents'] = decode_packet_14(byte_data.pop())
+            sensor_data['virtual wall'] = decode_packet_13(byte_data.pop())
+            sensor_data['cliff right'] = decode_packet_12(byte_data.pop())
+            sensor_data['cliff front right'] = decode_packet_11(byte_data.pop())
+            sensor_data['cliff front left'] = decode_packet_10(byte_data.pop())
+            sensor_data['cliff left'] = decode_packet_9(byte_data.pop())
+            sensor_data['wall seen'] = decode_packet_8(byte_data.pop())
+            sensor_data['wheel drop and bumps'] = decode_packet_7(byte_data.pop())
+            
         elif id == 1:
-            print id # Size 10, contais 7-16
+            # Size 10, contains 7-16
+            temp = decode_packet_16(byte_data.pop())
+            sensor_data['dirt detect'] = decode_packet_15(byte_data.pop())
+            sensor_data['wheel overcurrents'] = decode_packet_14(byte_data.pop())
+            sensor_data['virtual wall'] = decode_packet_13(byte_data.pop())
+            sensor_data['cliff right'] = decode_packet_12(byte_data.pop())
+            sensor_data['cliff front right'] = decode_packet_11(byte_data.pop())
+            sensor_data['cliff front left'] = decode_packet_10(byte_data.pop())
+            sensor_data['cliff left'] = decode_packet_9(byte_data.pop())
+            sensor_data['wall seen'] = decode_packet_8(byte_data.pop())
+            sensor_data['wheel drop and bumps'] = decode_packet_7(byte_data.pop())
+            
         elif id == 2:
-            print id # size 6, contains 17-20
+            # size 6, contains 17-20
+            sensor_data['angle'] = decode_packet_20(byte_data.pop(), byte_data.pop())
+            sensor_data['distance'] = decode_packet_19(byte_data.pop(), byte_data.pop())
+            sensor_data['buttons'] = decode_packet_18(byte_data.pop())
+            sensor_data['infared char left'] = decode_packet_17(byte_data.pop())
+            
         elif id == 3:
-            print id # size 10, contains 21-26
+            # size 10, contains 21-26
+            sensor_data['battery capacity'] = decode_packet_26(byte_data.pop(), byte_data.pop())
+            sensor_data['battery charge'] = decode_packet_25(byte_data.pop(), byte_data.pop())
+            sensor_data['temperature'] = decode_packet_24(byte_data.pop())
+            sensor_data['current'] = decode_packet_23(byte_data.pop(), byte_data.pop())
+            sensor_data['voltage'] = decode_packet_22(byte_data.pop(), byte_data.pop())
+            sensor_data['charging state'] = decode_packet_21(byte_data.pop())
+            
         elif id == 4:
-            print id # size 14, contains 27-34
+            # size 14, contains 27-34
+            sensor_data['charging sources available'] = decode_packet_34(byte_data.pop())
+            temp1 = decode_packet_33(byte_data.pop(), byte_data.pop())
+            temp = decode_packet_32(byte_data.pop())
+            sensor_data['cliff right signal'] = decode_packet_31(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff front right signal'] = decode_packet_30(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff front left signal'] = decode_packet_29(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff left signal'] = decode_packet_28(byte_data.pop(), byte_data.pop())
+            sensor_data['wall signal'] = decode_packet_27(byte_data.pop(), byte_data.pop())
+            
         elif id == 5:
-            print id # size 12, contains 35-42
+            # size 12, contains 35-42
+            sensor_data['requested left velocity'] = decode_packet_42(byte_data.pop(), byte_data.pop())
+            sensor_data['requested right velocity'] = decode_packet_41(byte_data.pop(), byte_data.pop())
+            sensor_data['requested radius'] = decode_packet_40(byte_data.pop(), byte_data.pop())
+            sensor_data['requested velocity'] = decode_packet_39(byte_data.pop(), byte_data.pop())
+            sensor_data['number of stream packets'] = decode_packet_38(byte_data.pop())
+            sensor_data['song playing'] = decode_packet_37(byte_data.pop())
+            sensor_data['song number'] = decode_packet_36(byte_data.pop())
+            sensor_data['oi mode'] = decode_packet_35(byte_data.pop())
+            
         elif id == 6:
-            print id # size 52, contains 7-42
+            # size 52, contains 7-42
+            sensor_data['requested left velocity'] = decode_packet_42(byte_data.pop(), byte_data.pop())
+            sensor_data['requested right velocity'] = decode_packet_41(byte_data.pop(), byte_data.pop())
+            sensor_data['requested radius'] = decode_packet_40(byte_data.pop(), byte_data.pop())
+            sensor_data['requested velocity'] = decode_packet_39(byte_data.pop(), byte_data.pop())
+            sensor_data['number of stream packets'] = decode_packet_38(byte_data.pop())
+            sensor_data['song playing'] = decode_packet_37(byte_data.pop())
+            sensor_data['song number'] = decode_packet_36(byte_data.pop())
+            sensor_data['oi mode'] = decode_packet_35(byte_data.pop())
+            sensor_data['charging sources available'] = decode_packet_34(byte_data.pop())
+            temp2 = decode_packet_33(byte_data.pop(), byte_data.pop())
+            temp1 = decode_packet_32(byte_data.pop())
+            sensor_data['cliff right signal'] = decode_packet_31(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff front right signal'] = decode_packet_30(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff front left signal'] = decode_packet_29(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff left signal'] = decode_packet_28(byte_data.pop(), byte_data.pop())
+            sensor_data['wall signal'] = decode_packet_27(byte_data.pop(), byte_data.pop())
+            sensor_data['battery capacity'] = decode_packet_26(byte_data.pop(), byte_data.pop())
+            sensor_data['battery charge'] = decode_packet_25(byte_data.pop(), byte_data.pop())
+            sensor_data['temperature'] = decode_packet_24(byte_data.pop())
+            sensor_data['current'] = decode_packet_23(byte_data.pop(), byte_data.pop())
+            sensor_data['voltage'] = decode_packet_22(byte_data.pop(), byte_data.pop())
+            sensor_data['charging state'] = decode_packet_21(byte_data.pop())
+            sensor_data['angle'] = decode_packet_20(byte_data.pop(), byte_data.pop())
+            sensor_data['distance'] = decode_packet_19(byte_data.pop(), byte_data.pop())
+            sensor_data['buttons'] = decode_packet_18(byte_data.pop())
+            sensor_data['infared char omni'] = decode_packet_17(byte_data.pop())
+            temp = decode_packet_16(byte_data.pop())
+            sensor_data['dirt detect'] = decode_packet_15(byte_data.pop())
+            sensor_data['wheel overcurrents'] = decode_packet_14(byte_data.pop())
+            sensor_data['virtual wall'] = decode_packet_13(byte_data.pop())
+            sensor_data['cliff right'] = decode_packet_12(byte_data.pop())
+            sensor_data['cliff front right'] = decode_packet_11(byte_data.pop())
+            sensor_data['cliff front left'] = decode_packet_10(byte_data.pop())
+            sensor_data['cliff left'] = decode_packet_9(byte_data.pop())
+            sensor_data['wall seen'] = decode_packet_8(byte_data.pop())
+            sensor_data['wheel drop and bumps'] = decode_packet_7(byte_data.pop())
+            
         elif id == 7:
             sensor_data['wheel drop and bumps'] = decode_packet_7(byte_data.pop())
         elif id == 8:
@@ -217,9 +317,10 @@ class sensorPacketDecoder(object):
         elif id == 15:
             sensor_data['dirt detect'] = decode_packet_15(byte_data.pop())
         elif id == 16:
-            sensor_data['infared char omni'] = decode_packet_16(byte_data.pop())print id
+            #unused
+            temp = decode_packet_16(byte_data.pop())
         elif id == 17:
-            sensor_data['infared char left'] = decode_packet_17(byte_data.pop())
+            sensor_data['infared char omni'] = decode_packet_17(byte_data.pop())
         elif id == 18:
             sensor_data['buttons'] = decode_packet_18(byte_data.pop())
         elif id == 19:
@@ -263,7 +364,7 @@ class sensorPacketDecoder(object):
             temp = decode_packet_32(byte_data.pop())
         elif id == 33:
             #2
-            temp = decode_packet_33(byte_data.pop())
+            temp = decode_packet_33(byte_data.pop(), byte_data.pop())
         elif id == 34:
             sensor_data['charging sources available'] = decode_packet_34(byte_data.pop())
         elif id == 35:
@@ -276,69 +377,152 @@ class sensorPacketDecoder(object):
             sensor_data['number of stream packets'] = decode_packet_38(byte_data.pop())
         elif id == 39:
             #2
-            print id
+            sensor_data['requested velocity'] = decode_packet_39(byte_data.pop(), byte_data.pop())
         elif id == 40:
             #2
-            print id
+            sensor_data['requested radius'] = decode_packet_40(byte_data.pop(), byte_data.pop())
         elif id == 41:
             #2
-            print id
+            sensor_data['requested right velocity'] = decode_packet_41(byte_data.pop(), byte_data.pop())
         elif id == 42:
             #2
-            print id
+            sensor_data['requested left velocity'] = decode_packet_42(byte_data.pop(), byte_data.pop())
         elif id == 43:
             #2
-            print id
+            sensor_data['left encoder counts'] = decode_packet_43(byte_data.pop(), byte_data.pop())
         elif id == 44:
             #2
-            print id
+            sensor_data['right encoder counts'] = decode_packet_44(byte_data.pop(), byte_data.pop())
         elif id == 45:
-            print id
+            sensor_data['light bumper'] = decode_packet_45(byte_data.pop())
         elif id == 46:
             #2
-            print id
+            sensor_data['light bump left signal'] = decode_packet_46(byte_data.pop(), byte_data.pop())
         elif id == 47:
             #2
-            print id
+            sensor_data['light bump front left signal'] = decode_packet_47(byte_data.pop(), byte_data.pop())
         elif id == 48:
             #2
-            print id
+            sensor_data['light bump center left signal'] = decode_packet_48(byte_data.pop(), byte_data.pop())
         elif id == 49:
             #2
-            print id
+            sensor_data['light bump center right signal'] = decode_packet_49(byte_data.pop(), byte_data.pop())
         elif id == 50:
             #2
-            print id
+            sensor_data['light bump front right signal'] = decode_packet_50(byte_data.pop(), byte_data.pop())
         elif id == 51:
             #2
-            print id
+            sensor_data['light bump right signal'] = decode_packet_51(byte_data.pop(), byte_data.pop())
         elif id == 52:
-            print id
+            sensor_data['infared char left'] = decode_packet_52(byte_data.pop())
         elif id == 53:
-            print id
+            sensor_data['infared char right'] = decode_packet_53(byte_data.pop())
         elif id == 54:
             #2
-            print id
+            sensor_data['left motor current'] = decode_packet_54(byte_data.pop(), byte_data.pop())
         elif id == 55:
             #2
-            print id
+            sensor_data['right motor current'] = decode_packet_55(byte_data.pop(), byte_data.pop())
         elif id == 56:
             #2
-            print id
+            sensor_data['main brush motor current'] = decode_packet_56(byte_data.pop(), byte_data.pop())
         elif id == 57:
             #2
-            print id
+            sensor_data['side brush motor current'] = decode_packet_57(byte_data.pop(), byte_data.pop())
         elif id == 58:
-            print id
+            sensor_data['stasis'] = decode_packet_58(byte_data.pop())
             ##### Single Packets END
         elif id == 100:
-            print id # size 80, contains 7-58 (ALL)
+            # size 80, contains 7-58 (ALL)
+            sensor_data['stasis'] = decode_packet_58(byte_data.pop())
+            sensor_data['side brush motor current'] = decode_packet_57(byte_data.pop(), byte_data.pop())
+            sensor_data['main brush motor current'] = decode_packet_56(byte_data.pop(), byte_data.pop())
+            sensor_data['right motor current'] = decode_packet_55(byte_data.pop(), byte_data.pop())
+            sensor_data['left motor current'] = decode_packet_54(byte_data.pop(), byte_data.pop())
+            sensor_data['infared char right'] = decode_packet_53(byte_data.pop())
+            sensor_data['infared char left'] = decode_packet_52(byte_data.pop())
+            sensor_data['light bump right signal'] = decode_packet_51(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump front right signal'] = decode_packet_50(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump center right signal'] = decode_packet_49(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump center left signal'] = decode_packet_48(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump front left signal'] = decode_packet_47(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump left signal'] = decode_packet_46(byte_data.pop(), byte_data.pop())
+            sensor_data['light bumper'] = decode_packet_45(byte_data.pop())
+            sensor_data['right encoder counts'] = decode_packet_44(byte_data.pop(), byte_data.pop())
+            sensor_data['left encoder counts'] = decode_packet_43(byte_data.pop(), byte_data.pop())
+            sensor_data['requested left velocity'] = decode_packet_42(byte_data.pop(), byte_data.pop())
+            sensor_data['requested right velocity'] = decode_packet_41(byte_data.pop(), byte_data.pop())
+            sensor_data['requested radius'] = decode_packet_40(byte_data.pop(), byte_data.pop())
+            sensor_data['requested velocity'] = decode_packet_39(byte_data.pop(), byte_data.pop())
+            sensor_data['number of stream packets'] = decode_packet_38(byte_data.pop())
+            sensor_data['song playing'] = decode_packet_37(byte_data.pop())
+            sensor_data['song number'] = decode_packet_36(byte_data.pop())
+            sensor_data['oi mode'] = decode_packet_35(byte_data.pop())
+            sensor_data['charging sources available'] = decode_packet_34(byte_data.pop())
+            temp2 = decode_packet_33(byte_data.pop(), byte_data.pop())
+            temp1 = decode_packet_32(byte_data.pop())
+            sensor_data['cliff right signal'] = decode_packet_31(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff front right signal'] = decode_packet_30(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff front left signal'] = decode_packet_29(byte_data.pop(), byte_data.pop())
+            sensor_data['cliff left signal'] = decode_packet_28(byte_data.pop(), byte_data.pop())
+            sensor_data['wall signal'] = decode_packet_27(byte_data.pop(), byte_data.pop())
+            sensor_data['battery capacity'] = decode_packet_26(byte_data.pop(), byte_data.pop())
+            sensor_data['battery charge'] = decode_packet_25(byte_data.pop(), byte_data.pop())
+            sensor_data['temperature'] = decode_packet_24(byte_data.pop())
+            sensor_data['current'] = decode_packet_23(byte_data.pop(), byte_data.pop())
+            sensor_data['voltage'] = decode_packet_22(byte_data.pop(), byte_data.pop())
+            sensor_data['charging state'] = decode_packet_21(byte_data.pop())
+            sensor_data['angle'] = decode_packet_20(byte_data.pop(), byte_data.pop())
+            sensor_data['distance'] = decode_packet_19(byte_data.pop(), byte_data.pop())
+            sensor_data['buttons'] = decode_packet_18(byte_data.pop())
+            sensor_data['infared char omni'] = decode_packet_17(byte_data.pop())
+            temp = decode_packet_16(byte_data.pop())
+            sensor_data['dirt detect'] = decode_packet_15(byte_data.pop())
+            sensor_data['wheel overcurrents'] = decode_packet_14(byte_data.pop())
+            sensor_data['virtual wall'] = decode_packet_13(byte_data.pop())
+            sensor_data['cliff right'] = decode_packet_12(byte_data.pop())
+            sensor_data['cliff front right'] = decode_packet_11(byte_data.pop())
+            sensor_data['cliff front left'] = decode_packet_10(byte_data.pop())
+            sensor_data['cliff left'] = decode_packet_9(byte_data.pop())
+            sensor_data['wall seen'] = decode_packet_8(byte_data.pop())
+            sensor_data['wheel drop and bumps'] = decode_packet_7(byte_data.pop())
+            
         elif id == 101:
-            print id # size 28, contains 43-58
+            # size 28, contains 43-58
+            sensor_data['stasis'] = decode_packet_58(byte_data.pop())
+            sensor_data['side brush motor current'] = decode_packet_57(byte_data.pop(), byte_data.pop())
+            sensor_data['main brush motor current'] = decode_packet_56(byte_data.pop(), byte_data.pop())
+            sensor_data['right motor current'] = decode_packet_55(byte_data.pop(), byte_data.pop())
+            sensor_data['left motor current'] = decode_packet_54(byte_data.pop(), byte_data.pop())
+            sensor_data['infared char right'] = decode_packet_53(byte_data.pop())
+            sensor_data['infared char left'] = decode_packet_52(byte_data.pop())
+            sensor_data['light bump right signal'] = decode_packet_51(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump front right signal'] = decode_packet_50(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump center right signal'] = decode_packet_49(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump center left signal'] = decode_packet_48(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump front left signal'] = decode_packet_47(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump left signal'] = decode_packet_46(byte_data.pop(), byte_data.pop())
+            sensor_data['light bumper'] = decode_packet_45(byte_data.pop())
+            sensor_data['right encoder counts'] = decode_packet_44(byte_data.pop(), byte_data.pop())
+            sensor_data['left encoder counts'] = decode_packet_43(byte_data.pop(), byte_data.pop())
+            
         elif id == 106:
-            print id # size 12, contains 46-51
+            # size 12, contains 46-51
+            sensor_data['light bump right signal'] = decode_packet_51(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump front right signal'] = decode_packet_50(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump center right signal'] = decode_packet_49(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump center left signal'] = decode_packet_48(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump front left signal'] = decode_packet_47(byte_data.pop(), byte_data.pop())
+            sensor_data['light bump left signal'] = decode_packet_46(byte_data.pop(), byte_data.pop())
+            
         elif id == 107:
-            print id # size 9, contains 54-58
+            # size 9, contains 54-58
+            sensor_data['stasis'] = decode_packet_58(byte_data.pop())
+            sensor_data['side brush motor current'] = decode_packet_57(byte_data.pop(), byte_data.pop())
+            sensor_data['main brush motor current'] = decode_packet_56(byte_data.pop(), byte_data.pop())
+            sensor_data['right motor current'] = decode_packet_55(byte_data.pop(), byte_data.pop())
+            sensor_data['left motor current'] = decode_packet_54(byte_data.pop(), byte_data.pop())
+            
         else:
             print "No valid packet!"
             return_dict = sensor_data
@@ -641,11 +825,12 @@ class sensorPacketDecoder(object):
         """
         return None
         
-    def decode_packet_33(self, data):
+    def decode_packet_33(self, low, high):
         """ Decode Packet 33 (Unused) and return its value
         
             Arguments:
-                data: The bytes to decode
+                low: The bytes to ignore
+                high: The bytes to ignore
         
             Returns: None
         """
@@ -869,7 +1054,7 @@ class sensorPacketDecoder(object):
         return decode_unsigned_byte(data)          
 
     def decode_packet_53(self, data):
-        """ Decode Packet 53 (dirt detect) and return its value
+        """ Decode Packet 53 (infared char right) and return its value
         
             Arguments:
                 data: The bytes to decode
