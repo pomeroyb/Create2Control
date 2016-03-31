@@ -37,7 +37,7 @@ for event in xbox_read.event_stream(deadzone=12000):
             # Thumbstick moved right
             vel = mapValue(event.value, 0, thumbstickMax, 0, 500)
             bot.turn_clockwise(vel)
-        if event.vale < 0 :
+        if event.value < 0 :
             # Thumbstick moved left
             vel = mapValue(event.value, thumbstickMin, 0, -500, 0)
             bot.turn_counter_clockwise(vel)
