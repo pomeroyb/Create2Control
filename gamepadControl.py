@@ -27,7 +27,7 @@ for event in xbox_read.event_stream(deadzone=12000):
     #Left thumbstick up/down controls speed
     if event.key == 'Y1':
         #map the thumbstick's value to the bot's driving speed
-        vel = mapValue(event.value, thumbstickMin, thumbstickMax, -500, 500)
+        vel = mapValue(event.value, thumbstickMin, thumbstickMax, -250, 250)
         print 'Driving'
         bot.drive_straight(vel)
     
@@ -37,11 +37,13 @@ for event in xbox_read.event_stream(deadzone=12000):
         if event.value > 0:
             # Thumbstick moved right
             print 'Steering Right'
-            vel = mapValue(event.value, 0, thumbstickMax, 0, 500)
+            print event.value
+            vel = mapValue(event.value, 0, thumbstickMax, 0, 100)
             bot.turn_clockwise(vel)
         if event.value < 0 :
             # Thumbstick moved left
             print 'Steering Left'
-            vel = mapValue(event.value, thumbstickMin, 0, -500, 0)
+            print event.value
+            vel = mapValue(event.value, thumbstickMin, 0, -100, 0)
             bot.turn_counter_clockwise(vel)
         
