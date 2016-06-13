@@ -653,7 +653,7 @@ class Create2(object):
             Arguments:
                 packet_id: The id of the packet you wish to collect.
             
-            Returns: None if there was an error, else the decoded packet data.
+            Returns: False if there was an error, True if the packet successfully came through.
         """
         packet_id = str(packet_id)
         packet_size = None
@@ -667,10 +667,11 @@ class Create2(object):
             packet_byte_data = list(self.SCI.Read(packet_size))
             # Once we have the byte data, we need to decode the packet and save the new sensor state
             self.sensor_state = self.decoder.decode_packet(packet_id, packet_byte_data, self.sensor_state)
+            return True
         else:
             #The packet was invalid, raise an error
             raise ROIDataByteError("Invalid packet ID")
-            return None
+            return False
 
 
 
