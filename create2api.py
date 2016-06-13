@@ -456,12 +456,8 @@ class Create2(object):
             raise ROIFailedToSendError("Invalid data, failed to send")
         
     
-    def song(self):
-        """Not implementing this for now.
-        """
-        #self.SCI.send(self.config.data['opcodes']['start'],0)
         
- #NOTE ABOUT SONGS: For some reason you cannot play a new song immediately after playing a different one, only the first song will play. You have to time.sleep() at least a fraction of a second for the speaker to process    
+  #NOTE ABOUT SONGS: For some reason you cannot play a new song immediately after playing a different one, only the first song will play. You have to time.sleep() at least a fraction of a second for the speaker to process    
     def song(self):
         """Not implementing this for now.
         """
@@ -567,9 +563,6 @@ class Create2(object):
         duration_list = map(int, duration_list)
         noError = True
         
-        print duration_list
-        print note_list
-        print len(note_list)
         if noError:
             #Need to map midi to numbers from the dict.
             for i in range (0,len(note_list)):
@@ -586,7 +579,6 @@ class Create2(object):
                     warnings.warn("Warning: Note '" + display_string[i] + "' was not found in midi table")
                 
             #play the song
-            print play_list
             self.create_song(song_number,play_list)
             self.play(song_number)
         else:
