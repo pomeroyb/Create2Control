@@ -460,7 +460,41 @@ class Create2(object):
         """Not implementing this for now.
         """
         #self.SCI.send(self.config.data['opcodes']['start'],0)
-    
+        
+    def play_test_sound(self):
+        """written to figure out how to play sounds. this will be rewritten using proper functions as outlined already once I build those out
+        """
+        noError = True
+        #sets lengths of notes
+        shortNote = 8
+        mediumNote = 16
+        longNote = 20
+        
+        #stores a 4 note song in song 3
+        current_song = 3
+        song_length = 4
+        song_setup = [current_song,song_length]
+        play_list = []
+        
+        #writes the song note commands to play_list
+        #change these to change notes
+        play_list.extend([self.config.data['midi table']['C#4'],mediumNote])
+        play_list.extend([self.config.data['midi table']['G4'],longNote])
+        play_list.extend([self.config.data['midi table']['A#3'],shortNote])
+        play_list.extend([self.config.data['midi table']['A3'],shortNote])
+        
+        #adds up the various commands and arrays
+        song_play = [self.config.data['opcodes']['play'], current_song]
+        play_sequence = [song_setup + play_list + song_play]
+        
+        #flattens array
+        play_sequence = [val for sublist in play_sequence for val in sublist]
+        
+        if noError:
+            self.SCI.send(self.config.data['opcodes']['song'], tuple(play_sequence))
+        else:
+            raise ROIFailedToSendError("Invalid data, failed to send")    
+            
     def play(self):
         """Not implementing this for now.
         """
