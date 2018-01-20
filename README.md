@@ -1,14 +1,17 @@
 # Create2API
 A python library for controlling the iRobot Create 2
 
-###Simple
+### Simple
 Create2API is made to give simple access to basic, often used functions on the iRobot Create 2. It keeps all the important info about your Create 2 in an easy to access JSON file.
 
-###Safe
+### Safe
 Create2API has a lot of checks in place to make sure you don't send a bad command to your robot. If something won't work, Create2API will let you know!
 
-###Easy to use
-Create2API is meant to be interacted with through a single class: "Create2". Interacting with your bot is a breeze:
+### Easy to use
+Create2API is meant to be interacted with through a single class: "Create2". Interacting with your bot is a breeze
+
+#### Important Note:
+The Serial-USB port is currently hardcoded. Contributions for automatically finding the port are welcome.
 
 ```python
 import create2api
