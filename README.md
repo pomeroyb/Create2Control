@@ -48,7 +48,7 @@ bot.destroy()
 ```
 
 
-##Implemented OI codes
+## Implemented OI codes
 - Start
 - Reset
 - Stop
@@ -66,7 +66,7 @@ bot.destroy()
 - Digit LED ASCII
 - Sensors
 
-##Unimplemented OI codes
+## Unimplemented OI codes
 - Schedule
 - Drive Direct
 - Drive PWM
